@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <h1 class="text-xl font-bold text-center">
-      QR Code Generator
-    </h1>
+  <div class="min-h-screen h-full flex items-center justify-center bg-[#247f4f]">
+    <QrCodeGenerator />
   </div>
 </template>
