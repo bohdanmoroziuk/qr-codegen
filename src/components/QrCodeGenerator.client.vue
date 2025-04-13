@@ -2,9 +2,21 @@
 import type { AccordionItem } from '@nuxt/ui'
 import QrCodeRenderer from 'qrcode.vue'
 
+const Size = {
+  XS: 50,
+  SM: 125,
+  MD: 200,
+  LG: 256,
+}
+
 const content = ref(location.href)
+const size = ref(Size.MD)
 const foreground = ref('#000000')
 const background = ref('#ffffff')
+
+const setSize = (value: number) => {
+  size.value = value
+}
 
 const items = ref<AccordionItem[]>([
   {
@@ -17,11 +29,16 @@ const items = ref<AccordionItem[]>([
     icon: 'i-lucide-brush',
     slot: 'colors',
   },
+  {
+    label: 'Size',
+    icon: 'i-lucide-square-dashed-mouse-pointer',
+    slot: 'size',
+  },
 ])
 
 const ui = {
   card: {
-    root: 'bg-[#e8eef2] shadow-[0_0_20px_rgba(0,0,0,0.25)]',
+    root: 'bg-[#e8eef2] shadow-[0_0_20px_rgba(0,0,0,0.25)] overflow-hidden',
     body: 'p-0 sm:p-0',
   },
   field: {
@@ -89,15 +106,63 @@ const ui = {
                   </UFormField>
                 </div>
               </template>
+
+              <template #size-body>
+                <p class="text-center">
+                  {{ size }} x {{ size }}
+                </p>
+                <div class="px-1 py-4">
+                  <USlider
+                    v-model="size"
+                    :min="Size.XS"
+                    :max="Size.LG"
+                  />
+                </div>
+                <div class="flex gap-x-2">
+                  <UButton
+                    size="sm"
+                    color="error"
+                    block
+                    @click="setSize(Size.XS)"
+                  >
+                    xs
+                  </UButton>
+                  <UButton
+                    size="sm"
+                    color="warning"
+                    block
+                    @click="setSize(Size.SM)"
+                  >
+                    sm
+                  </UButton>
+                  <UButton
+                    size="sm"
+                    color="info"
+                    block
+                    @click="setSize(Size.MD)"
+                  >
+                    md
+                  </UButton>
+                  <UButton
+                    size="sm"
+                    block
+                    @click="setSize(Size.LG)"
+                  >
+                    lg
+                  </UButton>
+                </div>
+              </template>
             </UAccordion>
           </div>
-          <div class="flex items-center justify-center p-8 bg-white">
-            <QrCodeRenderer
-              :value="content"
-              :size="256"
-              :foreground="foreground"
-              :background="background"
-            />
+          <div class="flex flex-col p-8 bg-white">
+            <div class="flex items-center justify-center w-64 h-64">
+              <QrCodeRenderer
+                :value="content"
+                :size="size"
+                :foreground="foreground"
+                :background="background"
+              />
+            </div>
           </div>
         </div>
       </template>
