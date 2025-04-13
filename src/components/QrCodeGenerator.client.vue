@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { AccordionItem } from '@nuxt/ui'
-import QrCodeVue from 'qrcode.vue'
+import QrCodeRenderer from 'qrcode.vue'
 
 const content = ref(location.href)
+const foreground = ref('#000000')
+const background = ref('#ffffff')
 
 const items = ref<AccordionItem[]>([
   {
@@ -10,12 +12,20 @@ const items = ref<AccordionItem[]>([
     icon: 'i-lucide-earth',
     slot: 'content',
   },
+  {
+    label: 'Colors',
+    icon: 'i-lucide-brush',
+    slot: 'colors',
+  },
 ])
 
 const ui = {
   card: {
     root: 'bg-[#e8eef2] shadow-[0_0_20px_rgba(0,0,0,0.25)]',
     body: 'p-0 sm:p-0',
+  },
+  field: {
+    root: 'flex-1',
   },
   input: {
     root: 'w-full',
@@ -36,11 +46,15 @@ const ui = {
         <div class="flex">
           <div class="flex-1 p-8">
             <UAccordion
-              :items
+              :default-value="['0']"
+              :items="items"
               type="multiple"
             >
               <template #content-body>
-                <UFormField label="URL">
+                <UFormField
+                  :ui="ui.field"
+                  label="URL"
+                >
                   <UInput
                     v-model.trim.lazy="content"
                     :ui="ui.input"
@@ -49,14 +63,40 @@ const ui = {
                   />
                 </UFormField>
               </template>
+
+              <template #colors-body>
+                <div class="flex items-center gap-x-4">
+                  <UFormField
+                    :ui="ui.field"
+                    label="Foreground"
+                  >
+                    <UInput
+                      v-model.lazy="foreground"
+                      :ui="ui.input"
+                      type="color"
+                    />
+                  </UFormField>
+
+                  <UFormField
+                    :ui="ui.field"
+                    label="Background"
+                  >
+                    <UInput
+                      v-model.lazy="background"
+                      :ui="ui.input"
+                      type="color"
+                    />
+                  </UFormField>
+                </div>
+              </template>
             </UAccordion>
           </div>
           <div class="flex items-center justify-center p-8 bg-white">
-            <QrCodeVue
+            <QrCodeRenderer
               :value="content"
               :size="256"
-              level="H"
-              render-as="svg"
+              :foreground="foreground"
+              :background="background"
             />
           </div>
         </div>
