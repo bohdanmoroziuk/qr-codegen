@@ -2,6 +2,51 @@
 import type { AccordionItem } from '@nuxt/ui'
 import QrCodeRenderer from 'qrcode.vue'
 
+const useLogo = () => {
+  const { open, reset, onChange } = useFileDialog({
+    accept: 'image/*',
+    multiple: false,
+  })
+
+  const logo = ref<string | undefined>(undefined)
+
+  const imageSettings = computed(() => {
+    if (logo.value == undefined) return undefined
+
+    return {
+      src: logo.value,
+      width: 96,
+      height: 96,
+      excavate: true,
+    }
+  })
+
+  const setLogo = async (files: FileList | null) => {
+    if (files == null) return
+    if (files.length == 0) return
+
+    logo.value = await fileToDataUrl(files[0])
+  }
+
+  const selectLogo = () => {
+    open()
+  }
+
+  const removeLogo = () => {
+    reset()
+    logo.value = undefined
+  }
+
+  onChange(setLogo)
+
+  return {
+    logo,
+    imageSettings,
+    selectLogo,
+    removeLogo,
+  }
+}
+
 const Size = {
   XS: 50,
   SM: 125,
@@ -10,9 +55,10 @@ const Size = {
 }
 
 const content = ref(location.href)
-const size = ref(Size.MD)
 const foreground = ref('#000000')
 const background = ref('#ffffff')
+const size = ref(Size.LG)
+const { logo, imageSettings, selectLogo, removeLogo } = useLogo()
 
 const setSize = (value: number) => {
   size.value = value
@@ -29,10 +75,15 @@ const items = ref<AccordionItem[]>([
     icon: 'i-lucide-brush',
     slot: 'colors',
   },
+  // {
+  //   label: 'Size',
+  //   icon: 'i-lucide-square-dashed-mouse-pointer',
+  //   slot: 'size',
+  // },
   {
-    label: 'Size',
-    icon: 'i-lucide-square-dashed-mouse-pointer',
-    slot: 'size',
+    label: 'Logo',
+    icon: 'i-lucide-image',
+    slot: 'logo',
   },
 ])
 
@@ -152,15 +203,48 @@ const ui = {
                   </UButton>
                 </div>
               </template>
+
+              <template #logo>
+                <div class="flex items-start gap-x-4">
+                  <img
+                    v-if="logo"
+                    :src="logo"
+                    class="w-24 h-24"
+                    alt="logo"
+                  >
+                  <div
+                    v-else
+                    class="bg-white w-24 h-24 p-2"
+                  >
+                    <div class="flex items-center justify-center h-full border-2 border-dashed border-gray-400">
+                      No logo
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-y-4">
+                    <UButton @click="selectLogo">
+                      Upload image
+                    </UButton>
+                    <UButton
+                      v-if="logo"
+                      variant="outline"
+                      color="secondary"
+                      @click="removeLogo"
+                    >
+                      Remove logo
+                    </UButton>
+                  </div>
+                </div>
+              </template>
             </UAccordion>
           </div>
           <div class="flex flex-col p-8 bg-white">
             <div class="flex items-center justify-center w-64 h-64">
               <QrCodeRenderer
                 :value="content"
-                :size="size"
                 :foreground="foreground"
                 :background="background"
+                :size="size"
+                :image-settings="imageSettings"
               />
             </div>
           </div>
