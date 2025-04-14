@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { AccordionItem } from '@nuxt/ui'
 import QrCodeRenderer from 'qrcode.vue'
+import { toPng, toSvg } from 'html-to-image'
+import { saveAs } from 'file-saver'
 
 const useLogo = () => {
   const { open, reset, onChange } = useFileDialog({
@@ -54,6 +56,8 @@ const Size = {
   LG: 256,
 }
 
+const toast = useToast()
+const qrCode = useTemplateRef<HTMLElement>('qr-code')
 const content = ref(location.href)
 const foreground = ref('#000000')
 const background = ref('#ffffff')
@@ -62,6 +66,26 @@ const { logo, imageSettings, selectLogo, removeLogo } = useLogo()
 
 const setSize = (value: number) => {
   size.value = value
+}
+
+const downloadQrCode = async (format: 'png' | 'svg') => {
+  if (qrCode.value == null) return
+
+  const toDataUrl = format === 'png' ? toPng : toSvg
+  const name = format === 'png' ? 'qr-code.png' : 'qr-code.svg'
+
+  try {
+    const dataUrl = await toDataUrl(qrCode.value)
+
+    saveAs(dataUrl, name)
+  }
+  catch (error) {
+    toast.add({
+      title: 'Error',
+      description: getErrorMessage(error, 'Could not download image'),
+      color: 'error',
+    })
+  }
 }
 
 const items = ref<AccordionItem[]>([
@@ -238,7 +262,10 @@ const ui = {
             </UAccordion>
           </div>
           <div class="flex flex-col p-8 bg-white">
-            <div class="flex items-center justify-center w-64 h-64">
+            <div
+              ref="qr-code"
+              class="flex items-center justify-center w-64 h-64"
+            >
               <QrCodeRenderer
                 :value="content"
                 :foreground="foreground"
@@ -246,6 +273,17 @@ const ui = {
                 :size="size"
                 :image-settings="imageSettings"
               />
+            </div>
+            <div class="flex items-center gap-x-4 mt-8">
+              <UButton @click="downloadQrCode('png')">
+                Download PNG
+              </UButton>
+              <UButton
+                color="secondary"
+                @click="downloadQrCode('svg')"
+              >
+                Download SVG
+              </UButton>
             </div>
           </div>
         </div>

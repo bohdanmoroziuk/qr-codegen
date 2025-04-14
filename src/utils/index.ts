@@ -13,3 +13,11 @@ export const fileToDataUrl = (file: File): Promise<string> => {
     reader.readAsDataURL(file)
   })
 }
+
+export const getErrorMessage = (error: unknown, defaultMessage: string) => {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return defaultMessage
+}
