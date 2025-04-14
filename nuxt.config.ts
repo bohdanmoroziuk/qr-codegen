@@ -8,6 +8,17 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
   },
+  app: {
+    head: {
+      title: 'QR Code Generator',
+      meta: [
+        {
+          name: 'description',
+          content: 'Generate QR codes from URLs instantly.',
+        },
+      ],
+    },
+  },
   css: [
     '~/assets/styles/main.css',
   ],
