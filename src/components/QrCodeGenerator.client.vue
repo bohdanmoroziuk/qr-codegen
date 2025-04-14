@@ -49,24 +49,12 @@ const useLogo = () => {
   }
 }
 
-const Size = {
-  XS: 50,
-  SM: 125,
-  MD: 200,
-  LG: 256,
-}
-
 const toast = useToast()
 const qrCode = useTemplateRef<HTMLElement>('qr-code')
 const content = ref(location.href)
 const foreground = ref('#000000')
 const background = ref('#ffffff')
-const size = ref(Size.LG)
 const { logo, imageSettings, selectLogo, removeLogo } = useLogo()
-
-const setSize = (value: number) => {
-  size.value = value
-}
 
 const downloadQrCode = async (format: 'png' | 'svg') => {
   if (qrCode.value == null) return
@@ -99,11 +87,6 @@ const items = ref<AccordionItem[]>([
     icon: 'i-lucide-brush',
     slot: 'colors',
   },
-  // {
-  //   label: 'Size',
-  //   icon: 'i-lucide-square-dashed-mouse-pointer',
-  //   slot: 'size',
-  // },
   {
     label: 'Logo',
     icon: 'i-lucide-image',
@@ -182,52 +165,6 @@ const ui = {
                 </div>
               </template>
 
-              <template #size-body>
-                <p class="text-center">
-                  {{ size }} x {{ size }}
-                </p>
-                <div class="px-1 py-4">
-                  <USlider
-                    v-model="size"
-                    :min="Size.XS"
-                    :max="Size.LG"
-                  />
-                </div>
-                <div class="flex gap-x-2">
-                  <UButton
-                    size="sm"
-                    color="error"
-                    block
-                    @click="setSize(Size.XS)"
-                  >
-                    xs
-                  </UButton>
-                  <UButton
-                    size="sm"
-                    color="warning"
-                    block
-                    @click="setSize(Size.SM)"
-                  >
-                    sm
-                  </UButton>
-                  <UButton
-                    size="sm"
-                    color="info"
-                    block
-                    @click="setSize(Size.MD)"
-                  >
-                    md
-                  </UButton>
-                  <UButton
-                    size="sm"
-                    block
-                    @click="setSize(Size.LG)"
-                  >
-                    lg
-                  </UButton>
-                </div>
-              </template>
-
               <template #logo>
                 <div class="flex items-start gap-x-4">
                   <img
@@ -270,7 +207,7 @@ const ui = {
                 :value="content"
                 :foreground="foreground"
                 :background="background"
-                :size="size"
+                :size="256"
                 :image-settings="imageSettings"
               />
             </div>
