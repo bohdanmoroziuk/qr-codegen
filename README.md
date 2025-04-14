@@ -1,6 +1,6 @@
-# Nuxt Minimal Starter
+# QR Code Generator
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+> A lightweight app to quickly generate QR codes from URLs. Paste a link and get an instant scannable code.
 
 ## Setup
 
