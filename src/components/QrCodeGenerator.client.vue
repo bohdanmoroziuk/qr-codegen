@@ -96,7 +96,7 @@ const items = ref<AccordionItem[]>([
 
 const ui = {
   card: {
-    root: 'bg-[#e8eef2] shadow-[0_0_20px_rgba(0,0,0,0.25)] overflow-hidden',
+    root: 'bg-slate-200 shadow-xl overflow-hidden',
     body: 'p-0 sm:p-0',
   },
   field: {
@@ -118,14 +118,14 @@ const ui = {
       </template>
 
       <template #default>
-        <div class="flex">
+        <div class="flex flex-col md:flex-row">
           <div class="flex-1 p-8">
             <UAccordion
               :default-value="['0']"
               :items="items"
               type="multiple"
             >
-              <template #content-body>
+              <template #content>
                 <UFormField
                   :ui="ui.field"
                   label="URL"
@@ -139,7 +139,7 @@ const ui = {
                 </UFormField>
               </template>
 
-              <template #colors-body>
+              <template #colors>
                 <div class="flex items-center gap-x-4">
                   <UFormField
                     :ui="ui.field"
@@ -198,7 +198,7 @@ const ui = {
               </template>
             </UAccordion>
           </div>
-          <div class="flex flex-col p-8 bg-white">
+          <div class="flex flex-col flex-1 md:flex-none items-center p-8 bg-white">
             <div
               ref="qr-code"
               class="flex items-center justify-center w-64 h-64"
