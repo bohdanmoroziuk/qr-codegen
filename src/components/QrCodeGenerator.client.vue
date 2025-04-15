@@ -1,69 +1,39 @@
 <script setup lang="ts">
+import { get } from '@vueuse/core'
 import type { AccordionItem } from '@nuxt/ui'
+import type { ImageSettings } from 'qrcode.vue'
 import QrCodeRenderer from 'qrcode.vue'
 import { toPng, toSvg } from 'html-to-image'
 import { saveAs } from 'file-saver'
 
-const useLogo = () => {
-  const { open, reset, onChange } = useFileDialog({
-    accept: 'image/*',
-    multiple: false,
-  })
-
-  const logo = ref<string | undefined>(undefined)
-
-  const imageSettings = computed(() => {
-    if (logo.value == undefined) return undefined
-
-    return {
-      src: logo.value,
-      width: 96,
-      height: 96,
-      excavate: true,
-    }
-  })
-
-  const setLogo = async (files: FileList | null) => {
-    if (files == null) return
-    if (files.length == 0) return
-
-    logo.value = await fileToDataUrl(files[0])
-  }
-
-  const selectLogo = () => {
-    open()
-  }
-
-  const removeLogo = () => {
-    reset()
-    logo.value = undefined
-  }
-
-  onChange(setLogo)
-
-  return {
-    logo,
-    imageSettings,
-    selectLogo,
-    removeLogo,
-  }
-}
-
 const toast = useToast()
 const qrCode = useTemplateRef<HTMLElement>('qr-code')
-const content = ref(location.href)
+const value = ref('')
 const foreground = ref('#000000')
 const background = ref('#ffffff')
-const { logo, imageSettings, selectLogo, removeLogo } = useLogo()
+const logo = ref<string | null>(null)
+
+const imageSettings = computed<ImageSettings | undefined>(() => {
+  if (get(logo) == null) {
+    return undefined
+  }
+
+  return {
+    src: get(logo)!,
+    width: 96,
+    height: 96,
+    excavate: true,
+  }
+})
 
 const downloadQrCode = async (format: 'png' | 'svg') => {
-  if (qrCode.value == null) return
+  if (get(qrCode) == null) return
 
   const toDataUrl = format === 'png' ? toPng : toSvg
   const name = format === 'png' ? 'qr-code.png' : 'qr-code.svg'
 
   try {
-    const dataUrl = await toDataUrl(qrCode.value)
+    const dataUrl = await toDataUrl(get(qrCode)!)
 
     saveAs(dataUrl, name)
   }
@@ -80,7 +50,7 @@ const items = ref<AccordionItem[]>([
   {
     label: 'Content',
     icon: 'i-lucide-earth',
-    slot: 'content',
+    slot: 'value',
   },
   {
     label: 'Colors',
@@ -98,12 +68,6 @@ const ui = {
   card: {
     root: 'bg-slate-200 shadow-xl overflow-hidden',
     body: 'p-0 sm:p-0',
-  },
-  field: {
-    root: 'flex-1',
-  },
-  input: {
-    root: 'w-full',
   },
 }
 </script>
@@ -125,76 +89,19 @@ const ui = {
               :items="items"
               type="multiple"
             >
-              <template #content>
-                <UFormField
-                  :ui="ui.field"
-                  label="URL"
-                >
-                  <UInput
-                    v-model.trim.lazy="content"
-                    :ui="ui.input"
-                    placeholder="http://"
-                    type="url"
-                  />
-                </UFormField>
+              <template #value>
+                <QrCodeValueUrl v-model:value="value" />
               </template>
 
               <template #colors>
-                <div class="flex items-center gap-x-4">
-                  <UFormField
-                    :ui="ui.field"
-                    label="Foreground"
-                  >
-                    <UInput
-                      v-model.lazy="foreground"
-                      :ui="ui.input"
-                      type="color"
-                    />
-                  </UFormField>
-
-                  <UFormField
-                    :ui="ui.field"
-                    label="Background"
-                  >
-                    <UInput
-                      v-model.lazy="background"
-                      :ui="ui.input"
-                      type="color"
-                    />
-                  </UFormField>
-                </div>
+                <QrCodeColors
+                  v-model:foreground="foreground"
+                  v-model:background="background"
+                />
               </template>
 
               <template #logo>
-                <div class="flex items-start gap-x-4">
-                  <img
-                    v-if="logo"
-                    :src="logo"
-                    class="w-24 h-24"
-                    alt="logo"
-                  >
-                  <div
-                    v-else
-                    class="bg-white w-24 h-24 p-2"
-                  >
-                    <div class="flex items-center justify-center h-full border-2 border-dashed border-gray-400">
-                      No logo
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-y-4">
-                    <UButton @click="selectLogo">
-                      Upload image
-                    </UButton>
-                    <UButton
-                      v-if="logo"
-                      variant="outline"
-                      color="secondary"
-                      @click="removeLogo"
-                    >
-                      Remove logo
-                    </UButton>
-                  </div>
-                </div>
+                <QrCodeLogo v-model:logo="logo" />
               </template>
             </UAccordion>
           </div>
@@ -204,7 +111,7 @@ const ui = {
               class="flex items-center justify-center w-64 h-64"
             >
               <QrCodeRenderer
-                :value="content"
+                :value="value"
                 :foreground="foreground"
                 :background="background"
                 :size="256"
