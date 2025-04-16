@@ -18,8 +18,8 @@ const ui = {
   },
 }
 
-const setModel = (email: string) => {
-  set(model, parseMailtoLink(email))
+const setModel = (link: string) => {
+  set(model, parseMailtoLink(link))
 }
 
 const setEmail = (data: MailtoData) => {
