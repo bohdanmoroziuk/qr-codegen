@@ -32,10 +32,6 @@ watch(model, setSms, { deep: true })
 
 <template>
   <div class="flex flex-col gap-4">
-    <p>
-      {{ sms }}
-    </p>
-
     <UFormField
       :ui="ui.field"
       label="Phone Number"
@@ -43,6 +39,7 @@ watch(model, setSms, { deep: true })
       <UInput
         v-model.trim.lazy="model.phone"
         :ui="ui.input"
+        placeholder="+1 234 567 8901"
         type="tel"
       />
     </UFormField>

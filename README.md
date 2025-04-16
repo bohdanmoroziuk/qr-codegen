@@ -20,6 +20,40 @@ yarn install
 bun install
 ```
 
+## Linting
+
+Check for code issues:
+
+```bash
+# npm
+npm run lint
+
+# pnpm
+pnpm lint
+
+# yarn
+yarn lint
+
+# bun
+bun run lint
+```
+
+Fix linting issues:
+
+```bash
+# npm
+npm run lint:fix
+
+# pnpm
+pnpm lint:fix
+
+# yarn
+yarn lint:fix
+
+# bun
+bun run lint:fix
+```
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
