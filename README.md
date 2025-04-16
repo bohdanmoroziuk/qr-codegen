@@ -1,6 +1,6 @@
 # QR Code Generator
 
-> A lightweight app to quickly generate QR codes from URLs. Paste a link and get an instant scannable code.
+> A lightweight app to quickly generate QR codes from a URL, email, or SMS. Just enter your data and get an instant, scannable code.
 
 ## Setup
 
