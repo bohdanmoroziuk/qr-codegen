@@ -49,6 +49,10 @@ watch(tab, resetValue)
       <template #email>
         <QrCodeValueEmail v-model:email="value" />
       </template>
+
+      <template #sms>
+        <QrCodeValueSms v-model:sms="value" />
+      </template>
     </UTabs>
   </div>
 </template>
