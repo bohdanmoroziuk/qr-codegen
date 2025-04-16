@@ -26,6 +26,10 @@ const imageSettings = computed<ImageSettings | undefined>(() => {
   }
 })
 
+const noValue = computed(() => {
+  return get(value) === ''
+})
+
 const downloadQrCode = async (format: 'png' | 'svg') => {
   if (get(qrCode) == null) return
 
@@ -110,6 +114,7 @@ const ui = {
           </div>
           <div class="flex flex-col flex-1 md:flex-none items-center p-8 bg-white">
             <div
+              v-if="value"
               ref="qr-code"
               class="flex items-center justify-center w-64 h-64"
             >
@@ -121,11 +126,19 @@ const ui = {
                 :image-settings="imageSettings"
               />
             </div>
+            <QrCodePlaceholder
+              v-else
+              text="Quickly turn any URL, email, or SMS into a scannable QR code."
+            />
             <div class="flex items-center gap-x-4 mt-8">
-              <UButton @click="downloadQrCode('png')">
+              <UButton
+                :disabled="noValue"
+                @click="downloadQrCode('png')"
+              >
                 Download PNG
               </UButton>
               <UButton
+                :disabled="noValue"
                 color="secondary"
                 @click="downloadQrCode('svg')"
               >
