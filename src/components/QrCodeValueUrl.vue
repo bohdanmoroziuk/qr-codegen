@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const value = defineModel<string>('value', { default: '' })
+const url = defineModel<string>('url', { default: '' })
 
 const ui = {
   field: {
@@ -17,7 +17,7 @@ const ui = {
     label="URL"
   >
     <UInput
-      v-model.trim.lazy="value"
+      v-model.trim.lazy="url"
       :ui="ui.input"
       placeholder="http://"
       type="url"

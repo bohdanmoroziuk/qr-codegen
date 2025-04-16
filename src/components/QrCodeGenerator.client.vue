@@ -49,7 +49,7 @@ const downloadQrCode = async (format: 'png' | 'svg') => {
 const items = ref<AccordionItem[]>([
   {
     label: 'Content',
-    icon: 'i-lucide-earth',
+    icon: 'i-lucide-square-pen',
     slot: 'value',
   },
   {
@@ -90,7 +90,7 @@ const ui = {
               type="multiple"
             >
               <template #value>
-                <QrCodeValueUrl v-model:value="value" />
+                <QrCodeValue v-model:value="value" />
               </template>
 
               <template #colors>
