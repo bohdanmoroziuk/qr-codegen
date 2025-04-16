@@ -49,18 +49,21 @@ const downloadQrCode = async (format: 'png' | 'svg') => {
 const items = ref<AccordionItem[]>([
   {
     label: 'Content',
-    icon: 'i-lucide-earth',
+    icon: 'i-lucide-square-pen',
     slot: 'value',
+    value: 'value',
   },
   {
     label: 'Colors',
     icon: 'i-lucide-brush',
     slot: 'colors',
+    value: 'colors',
   },
   {
     label: 'Logo',
     icon: 'i-lucide-image',
     slot: 'logo',
+    value: 'logo',
   },
 ])
 
@@ -85,12 +88,12 @@ const ui = {
         <div class="flex flex-col md:flex-row">
           <div class="flex-1 p-8">
             <UAccordion
-              :default-value="['0']"
+              :default-value="['value']"
               :items="items"
               type="multiple"
             >
               <template #value>
-                <QrCodeValueUrl v-model:value="value" />
+                <QrCodeValue v-model:value="value" />
               </template>
 
               <template #colors>
